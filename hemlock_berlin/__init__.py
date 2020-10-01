@@ -1,11 +1,31 @@
-from hemlock import Input, Page, Submit as S
+from hemlock import Debug as D, Embedded, Input, Page, Submit as S, Validate as V
 
 CORRECT_1 = 25
 CORRECT_2A = 30
 CORRECT_2B = 20
 CORRECT_3 = 50
 
-def berlin():
+def berlin(require=False):
+    """
+    Add the Berlin Numeracy Test to a hemlock survey.
+
+    Parameters
+    ----------
+    require : bool, default=False
+        Indicates that responses are required.
+
+    Returns
+    -------
+    Question 1 : hemlock.Page
+        The first page of the Berlin Numeracy Test.
+
+    Notes
+    -----
+    Although this function returns only the first page of the test, it is all
+    you need to add the full test to your survey. The submit function of the 
+    page returned by this function adaptively generates additional pages of 
+    the test.
+    """
     return Page(
         Input(
             '''
@@ -15,11 +35,15 @@ def berlin():
             What is the probability that a randomly drawn man is a member 
             of the choir? Please indicate the probability in percent.</p>
             ''',
-            append='%', input_type='number', submit=S(_verify1)
-        )
+            append='%', input_type='number', var='Berlin1', data_rows=-1,
+            validate=V.require() if require else None,
+            submit=S(_verify1, require),
+            debug=[D.send_keys(), D.send_keys('25', p_exec=.5)]
+        ),
+        name='Berlin 1', debug=[D.debug_questions(), D.forward()]
     )
 
-def _verify1(q1):
+def _verify1(q1, require):
     if q1.data != CORRECT_1:
         page = Page(
             Input(
@@ -28,9 +52,15 @@ def _verify1(q1):
                 average, out of these 50 throws how many times would this 
                 five-sided die show an odd number (1, 3, or 5)?</p>
                 ''',
-                append='out of 50 throws', input_type='number', var='Berlin',
-                submit=S(_verify2a)
-            )
+                append='out of 50 throws', 
+                input_type='number', 
+                var='Berlin2a',
+                data_rows=-1,
+                validate=V.require() if require else None,
+                submit=_verify2a,
+                debug=[D.send_keys(), D.send_keys('30', p_exec=.5)]
+            ),
+            name='Berlin 2a', debug=[D.debug_questions(), D.forward()]
         )
     else:
         page = Page(
@@ -41,19 +71,27 @@ def _verify1(q1):
                 probability of each of the other numbers. On average, out 
                 of these 70 throws how many times would the die show the 
                 number 6?</p>
-                ''',
-                append='out of 70 throws', input_type='number',
-                submit=S(_verify2b)
-            )
+                ''', 
+                append='out of 70 throws', 
+                input_type='number', 
+                var='Berlin2b',
+                data_rows=-1,
+                validate=V.require() if require else None,
+                submit=S(_verify2b, require),
+                debug=[D.send_keys(), D.send_keys('20', p_exec=.2)]
+            ),
+            name='Berlin 2b (or not 2b?)', 
+            debug=[D.debug_questions(), D.forward()]
         )
     q1.branch.pages.insert(q1.page.index+1, page)
 
 def _verify2a(q2a):
-    q2a.data = 1 if q2a.data != CORRECT_2A else 2
+    score = 1 if q2a.data == CORRECT_2A else 2
+    q2a.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
 
-def _verify2b(q2b):
+def _verify2b(q2b, require):
     if q2b.data == CORRECT_2B:
-        q2b.var, q2b.data = 'Berlin', 4
+        q2b.page.embedded = [Embedded('BerlinScore', 4, data_rows=-1)]
     else:
         page = Page(
             Input(
@@ -64,11 +102,15 @@ def _verify2b(q2b):
                 probability of 5%. What is the probability that a poisonous 
                 mushroom in the forest is red?</p>
                 ''',
-                append='%', input_type='number', var='Berlin',
-                submit=S(_verify3)
-            )
+                append='%', input_type='number', var='Berlin3', data_rows=-1,
+                validate=V.require() if require else None,
+                submit=_verify3,
+                debug=[D.send_keys(), D.send_keys('50', p_exec=.5)]
+            ),
+            name='Berlin 3', debug=[D.debug_questions(), D.forward()]
         )
         q2b.branch.pages.insert(q2b.page.index+1, page)
 
 def _verify3(q3):
-    q3.data = 3 if q3.data != CORRECT_3 else 4
+    score = 3 if q3.data != CORRECT_3 else 4
+    q3.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
