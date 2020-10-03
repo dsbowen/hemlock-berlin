@@ -33,14 +33,19 @@ def berlin(require=False):
             choir. Out of these 500 members in the choir 100 are men. Out 
             of the 500 inhabitants that are not in the choir 300 are men. 
             What is the probability that a randomly drawn man is a member 
-            of the choir? Please indicate the probability in percent.</p>
+            of the choir? Please enter the probability as a percent.</p>
             ''',
-            append='%', input_type='number', var='Berlin1', data_rows=-1,
+            append='%', 
+            extra_attrs=dict(type='number', min=0, max=100, step='any'), 
+            var='Berlin1', 
+            data_rows=-1,
             validate=V.require() if require else None,
             submit=S(_verify1, require),
             debug=[D.send_keys(), D.send_keys('25', p_exec=.5)]
         ),
-        name='Berlin 1', debug=[D.debug_questions(), D.forward()]
+        name='Berlin 1', 
+        timer=('Berlin1Time', -1),
+        debug=[D.debug_questions(), D.forward()]
     )
 
 def _verify1(q1, require):
@@ -52,15 +57,17 @@ def _verify1(q1, require):
                 average, out of these 50 throws how many times would this 
                 five-sided die show an odd number (1, 3, or 5)?</p>
                 ''',
-                append='out of 50 throws', 
-                input_type='number', 
+                append='out of 50 throws',
+                extra_attrs=dict(type='number', min=0, max=50),
                 var='Berlin2a',
                 data_rows=-1,
                 validate=V.require() if require else None,
                 submit=_verify2a,
                 debug=[D.send_keys(), D.send_keys('30', p_exec=.5)]
             ),
-            name='Berlin 2a', debug=[D.debug_questions(), D.forward()]
+            name='Berlin 2a', 
+            timer=('Berlin2aTime', -1),
+            debug=[D.debug_questions(), D.forward()]
         )
     else:
         page = Page(
@@ -72,8 +79,8 @@ def _verify1(q1, require):
                 of these 70 throws how many times would the die show the 
                 number 6?</p>
                 ''', 
-                append='out of 70 throws', 
-                input_type='number', 
+                append='out of 70 throws',
+                extra_attrs=dict(type='number', min=0, max=70),
                 var='Berlin2b',
                 data_rows=-1,
                 validate=V.require() if require else None,
@@ -81,12 +88,13 @@ def _verify1(q1, require):
                 debug=[D.send_keys(), D.send_keys('20', p_exec=.2)]
             ),
             name='Berlin 2b (or not 2b?)', 
+            timer=('Berlin2bTime', -1),
             debug=[D.debug_questions(), D.forward()]
         )
     q1.branch.pages.insert(q1.page.index+1, page)
 
 def _verify2a(q2a):
-    score = 1 if q2a.data == CORRECT_2A else 2
+    score = 2 if q2a.data == CORRECT_2A else 1
     q2a.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
 
 def _verify2b(q2b, require):
@@ -102,12 +110,17 @@ def _verify2b(q2b, require):
                 probability of 5%. What is the probability that a poisonous 
                 mushroom in the forest is red?</p>
                 ''',
-                append='%', input_type='number', var='Berlin3', data_rows=-1,
+                append='%', 
+                extra_attrs=dict(type='number', min=0, max=100, step='any'),
+                var='Berlin3', 
+                data_rows=-1,
                 validate=V.require() if require else None,
                 submit=_verify3,
                 debug=[D.send_keys(), D.send_keys('50', p_exec=.5)]
             ),
-            name='Berlin 3', debug=[D.debug_questions(), D.forward()]
+            name='Berlin 3', 
+            timer=('Berlin3Time', -1),
+            debug=[D.debug_questions(), D.forward()]
         )
         q2b.branch.pages.insert(q2b.page.index+1, page)
 
