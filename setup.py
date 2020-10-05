@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="hemlock-berlin",
-    version="0.0.1",
+    version="0.0.2",
     author="Dillon Bowen",
     author_email="dsbowen@example.com",
     description="Berlin Numeracy Test for Hemlock projects",

@@ -1,4 +1,5 @@
 README.md
+setup.py
 hemlock_berlin/__init__.py
 hemlock_berlin.egg-info/PKG-INFO
 hemlock_berlin.egg-info/SOURCES.txt

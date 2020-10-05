@@ -35,7 +35,7 @@ Add the Berlin Numeracy Test to a hemlock survey.
     <th class="field-name"><b>Parameters:</b></td>
     <td class="field-body" width="100%"><b>require : <i>bool, default=False</i></b>
 <p class="attr">
-    Indicates that responses are require.
+    Indicates that responses are required.
 </p></td>
 </tr>
 <tr class="field">
