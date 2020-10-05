@@ -1,3 +1,4 @@
+from flask_login import current_user
 from hemlock import Debug as D, Embedded, Input, Page, Submit as S, Validate as V
 
 CORRECT_1 = 25
@@ -36,10 +37,8 @@ def berlin(require=False):
             of the choir? Please enter the probability as a percent.</p>
             ''',
             append='%', 
-            extra_attrs=dict(type='number', min=0, max=100, step='any'), 
-            var='Berlin1', 
-            data_rows=-1,
-            validate=V.require() if require else None,
+            type='number', min=0, max=100, step='any', required=require,
+            var='Berlin1', data_rows=-1,
             submit=S(_verify1, require),
             debug=[D.send_keys(), D.send_keys('25', p_exec=.5)]
         ),
@@ -58,10 +57,8 @@ def _verify1(q1, require):
                 five-sided die show an odd number (1, 3, or 5)?</p>
                 ''',
                 append='out of 50 throws',
-                extra_attrs=dict(type='number', min=0, max=50),
-                var='Berlin2a',
-                data_rows=-1,
-                validate=V.require() if require else None,
+                type='number', min=0, max=50, step=1, required=require,
+                var='Berlin2a', data_rows=-1,
                 submit=_verify2a,
                 debug=[D.send_keys(), D.send_keys('30', p_exec=.5)]
             ),
@@ -80,10 +77,8 @@ def _verify1(q1, require):
                 number 6?</p>
                 ''', 
                 append='out of 70 throws',
-                extra_attrs=dict(type='number', min=0, max=70),
-                var='Berlin2b',
-                data_rows=-1,
-                validate=V.require() if require else None,
+                type='number', min=0, max=70, required=require,
+                var='Berlin2b', data_rows=-1,
                 submit=S(_verify2b, require),
                 debug=[D.send_keys(), D.send_keys('20', p_exec=.2)]
             ),
@@ -94,12 +89,19 @@ def _verify1(q1, require):
     q1.branch.pages.insert(q1.page.index+1, page)
 
 def _verify2a(q2a):
-    score = 2 if q2a.data == CORRECT_2A else 1
-    q2a.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
+    _record_score(q2a, score=2 if q2a.data == CORRECT_2A else 1)
+
+def _record_score(question, score):
+    """
+    Record the Berlin score as embedded data and make the score accessible
+    through `current_user.g['BerlinScore']`.
+    """
+    question.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
+    current_user.g['BerlinScore'] = score
 
 def _verify2b(q2b, require):
     if q2b.data == CORRECT_2B:
-        q2b.page.embedded = [Embedded('BerlinScore', 4, data_rows=-1)]
+        _record_score(q2b, score=4)
     else:
         page = Page(
             Input(
@@ -111,10 +113,8 @@ def _verify2b(q2b, require):
                 mushroom in the forest is red?</p>
                 ''',
                 append='%', 
-                extra_attrs=dict(type='number', min=0, max=100, step='any'),
-                var='Berlin3', 
-                data_rows=-1,
-                validate=V.require() if require else None,
+                type='number', min=0, max=100, step='any', required=require,
+                var='Berlin3', data_rows=-1,
                 submit=_verify3,
                 debug=[D.send_keys(), D.send_keys('50', p_exec=.5)]
             ),
@@ -125,5 +125,4 @@ def _verify2b(q2b, require):
         q2b.branch.pages.insert(q2b.page.index+1, page)
 
 def _verify3(q3):
-    score = 3 if q3.data != CORRECT_3 else 4
-    q3.page.embedded = [Embedded('BerlinScore', score, data_rows=-1)]
+    _record_score(q3, score=3 if q3.data != CORRECT_3 else 4)
