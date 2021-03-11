@@ -15,7 +15,8 @@
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
-  <link href="css/extra.css" rel="stylesheet" />
+  <link href="https://dsbowen.github.io/assets/css/code-highlighting.css" rel="stylesheet" />
+  <link href="https://dsbowen.github.io/assets/css/tabs.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -54,6 +55,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#run-your-app">Run your app</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#citation">Citation</a>
     </li>
@@ -104,48 +107,83 @@
                 <h1 id="hemlock-berlin">Hemlock-Berlin</h1>
 <p>Hemlock-Berlin is a <a href="https://dsbowen.github.io/hemlock" target="_blank">hemlock</a> extension which allows you to add a <a href="http://www.riskliteracy.org/" target="_blank"> Berlin numeracy test</a> to hemlock projects.</p>
 <h2 id="installation">Installation</h2>
-<p>With the hemlock-CLI (recommended):</p>
-<pre><code class="bash">$ hlk install hemlock-berlin
-</code></pre>
-
-<p>With pip:</p>
-<pre><code>$ pip install hemlock-berlin
-</code></pre>
-
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Hemlock-CLI</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>$ hlk install hemlock-berlin
+</code></pre></div>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">pip</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>$ pip install hemlock-berlin
+</code></pre></div>
+</div>
+</div>
 <h2 id="quickstart">Quickstart</h2>
 <p>This example shows how to add an adaptive Berlin numeracy test to your hemlock survey and display the participant's score to him/her.</p>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Using hemlock template</label><div class="tabbed-content">
 <p>In <code>survey.py</code>:</p>
-<pre><code class="python">from flask_login import current_user
-from hemlock import Branch, Page, Label, route
-from hemlock_berlin import berlin
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">hemlock</span> <span class="kn">import</span> <span class="n">Branch</span><span class="p">,</span> <span class="n">Page</span><span class="p">,</span> <span class="n">Label</span><span class="p">,</span> <span class="n">route</span>
+<span class="kn">from</span> <span class="nn">hemlock_berlin</span> <span class="kn">import</span> <span class="n">berlin</span>
 
-@route('/survey')
-def start():
-    return Branch(
-        berlin(),
-        Page(
-            Label(compile=display_score), 
-            terminal=True
-        )
-    )
+<span class="nd">@route</span><span class="p">(</span><span class="s1">&#39;/survey&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Branch</span><span class="p">(</span>
+        <span class="n">berlin</span><span class="p">(),</span>
+        <span class="n">Page</span><span class="p">(</span>
+            <span class="n">Label</span><span class="p">(</span><span class="nb">compile</span><span class="o">=</span><span class="n">display_score</span><span class="p">),</span> 
+            <span class="n">terminal</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
-def display_score(label):
-    label.label = '&lt;p&gt;Berlin score: {}&lt;/p&gt;'.format(
-        current_user.g['BerlinScore']
-    )
-</code></pre>
+<span class="k">def</span> <span class="nf">display_score</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Berlin score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">current_user</span><span class="o">.</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;BerlinScore&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">From scratch</label><div class="tabbed-content">
+<p>Create a file <code>app.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">eventlet</span>
+<span class="n">eventlet</span><span class="o">.</span><span class="n">monkey_patch</span><span class="p">()</span>
 
-<p><code>app.py</code> is standard from the hemlock template.</p>
-<p>Run the app with the hemlock command line interface:</p>
-<pre><code class="bash">hlk serve
-</code></pre>
+<span class="kn">from</span> <span class="nn">flask_login</span> <span class="kn">import</span> <span class="n">current_user</span>
+<span class="kn">from</span> <span class="nn">hemlock</span> <span class="kn">import</span> <span class="n">Branch</span><span class="p">,</span> <span class="n">Page</span><span class="p">,</span> <span class="n">Label</span><span class="p">,</span> <span class="n">create_app</span><span class="p">,</span> <span class="n">route</span>
+<span class="kn">from</span> <span class="nn">hemlock_berlin</span> <span class="kn">import</span> <span class="n">berlin</span>
 
-<p>or with python:</p>
-<pre><code class="bash">python app.py
-</code></pre>
+<span class="nd">@route</span><span class="p">(</span><span class="s1">&#39;/survey&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Branch</span><span class="p">(</span>
+        <span class="n">berlin</span><span class="p">(),</span>
+        <span class="n">Page</span><span class="p">(</span>
+            <span class="n">Label</span><span class="p">(</span><span class="nb">compile</span><span class="o">=</span><span class="n">display_score</span><span class="p">),</span> 
+            <span class="n">terminal</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
+<span class="k">def</span> <span class="nf">display_score</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">label</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Berlin score: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">current_user</span><span class="o">.</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;BerlinScore&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">hemlock.app</span> <span class="kn">import</span> <span class="n">socketio</span>
+    <span class="n">socketio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<h2 id="run-your-app">Run your app</h2>
+<div class="tabbed-set" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Hemlock-CLI</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>$ hlk serve
+</code></pre></div>
+</div>
+<input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><label for="__tabbed_3_2">python3</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>$ python3 app.py
+</code></pre></div>
+</div>
+</div>
 <h2 id="citation">Citation</h2>
-<pre><code>@software{bowen2020hemlock-berlin,
+<div class="highlight"><pre><span></span><code>@software{bowen2020hemlock-berlin,
   author = {Dillon Bowen},
   title = {Hemlock-Berlin},
   url = {https://dsbowen.github.io/hemlock-berlin/},
@@ -159,8 +197,7 @@ def display_score(label):
   year={2012},
   publisher={Society for Judgment and Decision Making}
 }
-</code></pre>
-
+</code></pre></div>
 <h2 id="license">License</h2>
 <p>Users must cite this package in any publications which use it.</p>
 <p>It is licensed with the MIT <a href="https://github.com/dsbowen/docstr-md/blob/master/LICENSE">License</a>.</p>
@@ -218,6 +255,6 @@ def display_score(label):
 </html>
 
 <!--
-MkDocs version : 1.1.1
-Build Date UTC : 2020-10-05 21:57:55.567172+00:00
+MkDocs version : 1.1.2
+Build Date UTC : 2021-03-11 12:22:20.099569+00:00
 -->

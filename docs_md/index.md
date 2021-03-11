@@ -4,58 +4,88 @@ Hemlock-Berlin is a <a href="https://dsbowen.github.io/hemlock" target="_blank">
 
 ## Installation
 
-With the hemlock-CLI (recommended):
+=== "Hemlock-CLI"
+    ```bash
+    $ hlk install hemlock-berlin
+    ```
 
-```bash
-$ hlk install hemlock-berlin
-```
-
-With pip:
-
-```
-$ pip install hemlock-berlin
-```
+=== "pip"
+    ```
+    $ pip install hemlock-berlin
+    ```
 
 ## Quickstart
 
 This example shows how to add an adaptive Berlin numeracy test to your hemlock survey and display the participant's score to him/her.
 
-In `survey.py`:
+=== "Using hemlock template"
+    In `survey.py`:
 
-```python
-from flask_login import current_user
-from hemlock import Branch, Page, Label, route
-from hemlock_berlin import berlin
+    ```python
+    from flask_login import current_user
+    from hemlock import Branch, Page, Label, route
+    from hemlock_berlin import berlin
 
-@route('/survey')
-def start():
-    return Branch(
-        berlin(),
-        Page(
-            Label(compile=display_score), 
-            terminal=True
+    @route('/survey')
+    def start():
+        return Branch(
+            berlin(),
+            Page(
+                Label(compile=display_score), 
+                terminal=True
+            )
         )
-    )
 
-def display_score(label):
-    label.label = '<p>Berlin score: {}</p>'.format(
-        current_user.g['BerlinScore']
-    )
-```
+    def display_score(label):
+        label.label = 'Berlin score: {}'.format(
+            current_user.g['BerlinScore']
+        )
+    ```
 
-`app.py` is standard from the hemlock template.
+=== "From scratch"
+    Create a file `app.py`:
 
-Run the app with the hemlock command line interface:
+    ```python
+    import eventlet
+    eventlet.monkey_patch()
 
-```bash
-hlk serve
-```
+    from flask_login import current_user
+    from hemlock import Branch, Page, Label, create_app, route
+    from hemlock_berlin import berlin
 
-or with python:
+    @route('/survey')
+    def start():
+        return Branch(
+            berlin(),
+            Page(
+                Label(compile=display_score), 
+                terminal=True
+            )
+        )
 
-```bash
-python app.py
-```
+    def display_score(label):
+        label.label = 'Berlin score: {}'.format(
+            current_user.g['BerlinScore']
+        )
+
+    app = create_app()
+
+    if __name__ == '__main__':
+        from hemlock.app import socketio
+        socketio.run(app, debug=True)
+    ```
+
+## Run your app
+
+=== "Hemlock-CLI"
+    ```bash
+    $ hlk serve
+    ```
+
+=== "python3"
+    ```bash
+    $ python3 app.py
+    ```
 
 ## Citation
 

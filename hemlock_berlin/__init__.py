@@ -17,7 +17,7 @@ def berlin(require=False):
 
     Returns
     -------
-    Question 1 : hemlock.Page
+    Berlin page 1 : hemlock.Page
         The first page of the Berlin Numeracy Test.
 
     Notes
@@ -30,11 +30,7 @@ def berlin(require=False):
     return Page(
         Input(
             '''
-            <p>Out of 1,000 people in a small town 500 are members of a 
-            choir. Out of these 500 members in the choir 100 are men. Out 
-            of the 500 inhabitants that are not in the choir 300 are men. 
-            What is the probability that a randomly drawn man is a member 
-            of the choir? Please enter the probability as a percent.</p>
+            Out of 1,000 people in a small town 500 are members of a choir. Out of these 500 members in the choir 100 are men. Out of the 500 inhabitants that are not in the choir 300 are men. What is the probability that a randomly drawn man is a member of the choir? Please enter the probability as a percent.
             ''',
             append='%', 
             type='number', min=0, max=100, step='any', required=require,
@@ -52,9 +48,7 @@ def _verify1(q1, require):
         page = Page(
             Input(
                 '''
-                <p>Imagine we are throwing a five-sided die 50 times. On 
-                average, out of these 50 throws how many times would this 
-                five-sided die show an odd number (1, 3, or 5)?</p>
+                Imagine we are throwing a five-sided die 50 times. On average, out of these 50 throws how many times would this five-sided die show an odd number (1, 3, or 5)?
                 ''',
                 append='out of 50 throws',
                 type='number', min=0, max=50, step=1, required=require,
@@ -70,11 +64,7 @@ def _verify1(q1, require):
         page = Page(
             Input(
                 '''
-                <p> Imagine we are throwing a loaded die (6 sides). The 
-                probability that the die shows a 6 is twice as high as the 
-                probability of each of the other numbers. On average, out 
-                of these 70 throws how many times would the die show the 
-                number 6?</p>
+                Imagine we are throwing a loaded die (6 sides). The probability that the die shows a 6 is twice as high as the probability of each of the other numbers. On average, out of these 70 throws how many times would the die show the number 6?
                 ''', 
                 append='out of 70 throws',
                 type='number', min=0, max=70, required=require,
@@ -106,11 +96,7 @@ def _verify2b(q2b, require):
         page = Page(
             Input(
                 '''
-                <p>In a forest 20% of mushrooms are red, 50% brown, and 30% 
-                white. A red mushroom is poisonous with a probability of 
-                20%. A mushroom that is not red is poisonous with a 
-                probability of 5%. What is the probability that a poisonous 
-                mushroom in the forest is red?</p>
+                In a forest 20% of mushrooms are red, 50% brown, and 30% white. A red mushroom is poisonous with a probability of 20%. A mushroom that is not red is poisonous with a probability of 5%. What is the probability that a poisonous mushroom in the forest is red?
                 ''',
                 append='%', 
                 type='number', min=0, max=100, step='any', required=require,
