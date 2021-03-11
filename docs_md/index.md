@@ -37,9 +37,7 @@ This example shows how to add an adaptive Berlin numeracy test to your hemlock s
         )
 
     def display_score(label):
-        label.label = 'Berlin score: {}'.format(
-            current_user.g['BerlinScore']
-        )
+        label.label = f"Berlin score: {current_user.g['BerlinScore']}"
     ```
 
 === "From scratch"
@@ -64,9 +62,7 @@ This example shows how to add an adaptive Berlin numeracy test to your hemlock s
         )
 
     def display_score(label):
-        label.label = 'Berlin score: {}'.format(
-            current_user.g['BerlinScore']
-        )
+        label.label = f"Berlin score: {current_user.g['BerlinScore']}"
 
     app = create_app()
 

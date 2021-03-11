@@ -38,9 +38,7 @@ def start():
     )
 
 def display_score(label):
-    label.label = '<p>Berlin score: {}</p>'.format(
-        current_user.g['BerlinScore']
-    )
+    label.label = f"Berlin score: {current_user.g['BerlinScore']}"
 ```
 
 `app.py` is standard from the hemlock template.

@@ -13,6 +13,4 @@ def start():
     )
 
 def display_score(label):
-    label.label = 'Berlin score: {}'.format(
-        current_user.g['BerlinScore']
-    )
+    label.label = f"Berlin score: {current_user.g['BerlinScore']}"
